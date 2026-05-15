@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Tríplice Desafio - Carros + Esportes + Imagens 🎯</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Container principal */
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 40px;
+            padding: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        /* Header com temas */
+        .themes-bar {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .theme-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-btn.cars {
+            background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+            color: white;
+        }
+
+        .theme-btn.sports {
+            background: linear-gradient(135deg, #51cf66, #2b8a3e);
+            color: white;
+        }
+
+        .theme-btn.images {
+            background: linear-gradient(135deg, #74c0fc, #1864ab);
+            color: white;
+        }
+
+        .theme-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 2px solid gold;
+        }
+
+        .theme-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Placar */
+        .score-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .score-card .label {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .score-card .value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* Área do desafio */
+        .challenge-area {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 25px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .challenge-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .challenge-question {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .challenge-image {
+            font-size: 3em;
+            letter-spacing: 10px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            display: inline-block;
+            font-family: monospace;
+        }
+
+        /* Imagem ascii para tema imagens */
+        .ascii-art {
+            font-size: 0.7em;
+            white-space: pre;
+            font-family: monospace;
+            background: #2c3e50;
+            color: #4ecdc4;
+            padding: 20px;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        /* Opções */
+        .options-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .option-card:hover:not(.disabled) {
+            transform: scale(1.05);
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .option-card.correct {
+            background: linear-gradient(135deg, #51cf66, #2b8a3e);
+            color: white;
+            animation: correctPulse 0.5s;
+        }
+
+        .option-card.wrong {
+            background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+            color: white;
+            animation: wrongShake 0.5s;
+        }
+
+        .option-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px #51cf66; }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Botões de ação */
+        .action-area {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        .next-btn {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .reset-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* Modal personalizado */
+        .custom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-themed {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 40px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            color: white;
+            border: 3px solid gold;
+            position: relative;
+        }
+
+        .modal-themed h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .modal-themed .modal-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .modal-themed button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: gold;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        /* Indicador de som */
+        .sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5em;
+            z-index: 1000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .challenge-question { font-size: 1.2em; }
+            .options-area { grid-template-columns: 1fr; }
+            .theme-btn { padding: 10px 20px; font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Botões de tema -->
+        <div class="themes-bar">
+            <button class="theme-btn cars" data-theme="cars">🚗 CARROS</button>
+            <button class="theme-btn sports" data-theme="sports">⚽ ESPORTES</button>
+            <button class="theme-btn images" data-theme="images">🎨 IMAGENS</button>
+        </div>
+
+        <!-- Placar -->
+        <div class="score-area">
+            <div class="score-card">
+                <div class="label">⭐ PONTOS</div>
+                <div class="value" id="score">0</div>
+            </div>
+            <div class="score-card">
+                <div class="label">✅ ACERTOS</div>
+                <div class="value" id="hits">0</div>
+            </div>
+            <div class="score-card">
+                <div class="label">📊 RODADA</div>
+                <div class="value"><span id="currentRound">1</span>/<span id="totalRounds">10</span></div>
+            </div>
+        </div>
+
+        <!-- Área do desafio -->
+        <div class="challenge-area" id="challengeArea">
+            <div class="challenge-icon" id="challengeIcon">🚗</div>
+            <div class="challenge-question" id="challengeQuestion">Selecione um tema!</div>
+            <div id="challengeMedia"></div>
+        </div>
+
+        <!-- Opções -->
+        <div class="options-area" id="optionsArea"></div>
+
+        <!-- Ações -->
+        <div class="action-area">
+            <button class="action-btn next-btn" id="nextBtn" style="display: none;">⏩ PRÓXIMA</button>
+            <button class="action-btn reset-btn" id="resetBtn">🔄 NOVO JOGO</button>
+        </div>
+    </div>
+
+    <!-- Botão de som -->
+    <div class="sound-toggle" id="soundToggle">🔊</div>
+
+    <!-- Modal personalizado -->
+    <div class="custom-modal" id="gameModal">
+        <div class="modal-themed" id="modalContent">
+            <div class="modal-icon" id="modalIcon">🏆</div>
+            <h2 id="modalTitle">FIM DE JOGO!</h2>
+            <p id="modalMessage">Sua pontuação: <strong id="modalScore">0</strong></p>
+            <p id="modalDetail"></p>
+            <button id="modalPlayAgain">🎮 JOGAR NOVAMENTE</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== BANCO DE DADOS DOS TEMAS ====================
+        const themesData = {
+            cars: {
+                name: "CARROS",
+                icon: "🚗",
+                color: "#ff6b6b",
+                questions: [
+                    { question: "Qual fabricante tem o símbolo do cavalo empinado?", answer: "Ferrari", options: ["Ferrari", "Porsche", "Lamborghini", "Mustang"] },
+                    { question: "Qual país fabrica a BMW?", answer: "Alemanha", options: ["Alemanha", "Japão", "EUA", "Itália"] },
+                    { question: "Qual é o carro mais rápido do mundo (produção)?", answer: "Bugatti", options: ["Bugatti", "Tesla", "Ferrari", "Koenigsegg"] },
+                    { question: "Qual desses é um modelo da Toyota?", answer: "Corolla", options: ["Corolla", "Civic", "Focus", "Golf"] },
+                    { question: "O que significa a sigla 'F1' no automobilismo?", answer: "Fórmula 1", options: ["Fórmula 1", "Fast One", "Ferrari 1", "Final 1"] }
+                ]
+            },
+            sports: {
+                name: "ESPORTES",
+                icon: "⚽",
+                color: "#51cf66",
+                questions: [
+                    { question: "Qual país ganhou mais Copas do Mundo de Futebol?", answer: "Brasil", options: ["Brasil", "Alemanha", "Itália", "Argentina"] },
+                    { question: "Quem é conhecido como 'Air Jordan'?", answer: "Michael Jordan", options: ["Michael Jordan", "LeBron James", "Kobe Bryant", "Magic Johnson"] },
+                    { question: "Qual esporte usa uma peteca?", answer: "Badminton", options: ["Badminton", "Tênis", "Vôlei", "Paddle"] },
+                    { question: "Quantos jogadores tem um time de basquete em quadra?", answer: "5", options: ["5", "6", "7", "4"] },
+                    { question: "Qual estádio é conhecido como 'Maracanã'?", answer: "Rio de Janeiro", options: ["Rio de Janeiro", "São Paulo", "Belo Horizonte", "Porto Alegre"] }
+                ]
+            },
+            images: {
+                name: "IMAGENS",
+                icon: "🎨",
+                color: "#74c0fc",
+                questions: [
+                    { question: "🐱 → Qual animal?", answer: "Gato", options: ["Gato", "Cachorro", "Rato", "Coelho"] },
+                    { question: "🌞 → O que é?", answer: "Sol", options: ["Sol", "Lua", "Estrela", "Planeta"] },
+                    { question: "🍕 → Qual comida?", answer: "Pizza", options: ["Pizza", "Hambúrguer", "Lasanha", "Taco"] },
+                    { question: "✈️ → Qual meio de transporte?", answer: "Avião", options: ["Avião", "Helicóptero", "Foguete", "Drone"] },
+                    { question: "🎵 → O que representa?", answer: "Música", options: ["Música", "Rádio", "Show", "Nota"] }
+                ]
+            }
+        };
+
+        // Estado do jogo
+        let gameState = {
+            currentTheme: "cars",
+            score: 0,
+            hits: 0,
+            currentRound: 1,
+            totalRounds: 10,
+            currentQuestionIndex: 0,
+            questions: [],
+            canAnswer: true,
+            soundEnabled: true
+        };
+
+        let currentQuestion = null;
+        let audioContext = null;
+
+        // Elementos DOM
+        const scoreEl = document.getElementById('score');
+        const hitsEl = document.getElementById('hits');
+        const currentRoundEl = document.getElementById('currentRound');
+        const totalRoundsEl = document.getElementById('totalRounds');
+        const challengeIcon = document.getElementById('challengeIcon');
+        const challengeQuestion = document.getElementById('challengeQuestion');
+        const challengeMedia = document.getElementById('challengeMedia');
+        const optionsArea = document.getElementById('optionsArea');
+        const nextBtn = document.getElementById('nextBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const soundToggle = document.getElementById('soundToggle');
+        const gameModal = document.getElementById('gameModal');
+
+        // ==================== SISTEMA DE SOM ====================
+        function playSound(type) {
+            if (!gameState.soundEnabled) return;
+            
+            try {
+                // Criar sons sintetizados (sem arquivos externos)
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                if (type === 'correct') {
+                    oscillator.frequency.value = 880;
+                    gainNode.gain.value = 0.3;
+                    oscillator.start();
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+                    oscillator.stop(audioCtx.currentTime + 0.5);
+                } else if (type === 'wrong') {
+                    oscillator.frequency.value = 440;
+                    gainNode.gain.value = 0.3;
+                    oscillator.start();
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.8);
+                    oscillator.stop(audioCtx.currentTime + 0.8);
+                } else if (type === 'win') {
+                    // Som de vitória (melodia simples)
+                    const notes = [523.25, 587.33, 659.25, 523.25];
+                    notes.forEach((freq, i) => {
+                        setTimeout(() => {
+                            const osc = audioCtx.createOscillator();
+                            const gain = audioCtx.createGain();
+                            osc.connect(gain);
+                            gain.connect(audioCtx.destination);
+                            osc.frequency.value = freq;
+                            gain.gain.value = 0.2;
+                            osc.start();
+                            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+                            osc.stop(audioCtx.currentTime + 0.3);
+                        }, i * 150);
+                    });
+                }
+            } catch(e) {
+                console.log('Som não suportado');
+            }
+        }
+
+        // ==================== FUNÇÕES DO JOGO ====================
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function loadThemeQuestions() {
+            const theme = themesData[gameState.currentTheme];
+            let questions = [...theme.questions];
+            
+            // Duplicar para ter 10 questões
+            while (questions.length < gameState.totalRounds) {
+                questions = [...questions, ...theme.questions];
+            }
+            questions = questions.slice(0, gameState.totalRounds);
+            
+            gameState.questions = shuffleArray(questions);
+            gameState.currentQuestionIndex = 0;
+        }
+
+        function loadQuestion() {
+            if (gameState.currentQuestionIndex >= gameState.questions.length) {
+                gameWin();
+                return;
+            }
+            
+            currentQuestion = { ...gameState.questions[gameState.currentQuestionIndex] };
+            // Embaralhar opções
+            currentQuestion.options = shuffleArray([...currentQuestion.options]);
+            
+            // Atualizar UI
+            const theme = themesData[gameState.currentTheme];
+            challengeIcon.textContent = theme.icon;
+            challengeQuestion.textContent = currentQuestion.question;
+            
+            // Para tema imagens, mostrar emoji maior
+            if (gameState.currentTheme === 'images') {
+                challengeMedia.innerHTML = `<div class="challenge-image" style="font-size: 4em;">${currentQuestion.question}</div>`;
+                challengeQuestion.textContent = "O que é isto?";
+            } else {
+                challengeMedia.innerHTML = '';
+                challengeQuestion.textContent = currentQuestion.question;
+            }
+            
+            renderOptions();
+            gameState.canAnswer = true;
+            nextBtn.style.display = 'none';
+        }
+
+        function renderOptions() {
+            optionsArea.innerHTML = '';
+            currentQuestion.options.forEach(opt => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option-card';
+                optionDiv.textContent = opt;
+                optionDiv.onclick = () => checkAnswer(opt);
+                optionsArea.appendChild(optionDiv);
+            });
+        }
+
+        function checkAnswer(selected) {
+            if (!gameState.canAnswer) return;
+            
+            const isCorrect = selected === currentQuestion.answer;
+            
+            if (isCorrect) {
+                playSound('correct');
+                gameState.score += 10;
+                gameState.hits++;
+                gameState.currentRound++;
+                updateUI();
+                
+                // Feedback visual
+                const options = document.querySelectorAll('.option-card');
+                options.forEach(opt => {
+                    if (opt.textContent === selected) {
+                        opt.classList.add('correct');
+                    }
+                    opt.classList.add('disabled');
+                });
+                
+                gameState.canAnswer = false;
+                
+                if (gameState.currentRound > gameState.totalRounds) {
+                    gameWin();
+                } else {
+                    nextBtn.style.display = 'block';
+                }
+            } else {
+                playSound('wrong');
+                // Destacar resposta correta
+                const options = document.querySelectorAll('.option-card');
+                options.forEach(opt => {
+                    if (opt.textContent === selected) {
+                        opt.classList.add('wrong');
+                    }
+                    if (opt.textContent === currentQuestion.answer) {
+                        opt.classList.add('correct');
+                    }
+                    opt.classList.add('disabled');
+                });
+                
+                gameState.canAnswer = false;
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        function nextQuestion() {
+            gameState.currentQuestionIndex++;
+            loadQuestion();
+            updateUI();
+        }
+
+        function updateUI() {
+            scoreEl.textContent = gameState.score;
+            hitsEl.textContent = gameState.hits;
+            currentRoundEl.textContent = gameState.currentRound;
+            totalRoundsEl.textContent = gameState.totalRounds;
+        }
+
+        function resetGame() {
+            gameState = {
+                currentTheme: gameState.currentTheme,
+                score: 0,
+                hits: 0,
+                currentRound: 1,
+                totalRounds: 10,
+                currentQuestionIndex: 0,
+                questions: [],
+                canAnswer: true,
+                soundEnabled: gameState.soundEnabled
+            };
+            loadThemeQuestions();
+            loadQuestion();
+            updateUI();
+        }
+
+        function changeTheme(theme) {
+            gameState.currentTheme = theme;
+            resetGame();
+            
+            // Atualizar botões ativos
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.dataset.theme === theme) btn.classList.add('active');
+            });
+        }
+
+        function gameWin() {
+            playSound('win');
+            const theme = themesData[gameState.currentTheme];
+            document.getElementById('modalIcon').textContent = theme.icon;
+            document.getElementById('modalTitle').textContent = '🎉 VITÓRIA! 🎉';
+            document.getElementById('modalMessage').innerHTML = `Você completou o desafio <strong>${theme.name}</strong>!`;
+            document.getElementById('modalScore').textContent = gameState.score;
+            document.getElementById('modalDetail').innerHTML = `✅ ${gameState.hits} acertos em 10 rodadas!<br>⭐ Pontuação final: ${gameState.score}`;
+            gameModal.style.display = 'flex';
+        }
+
+        // ==================== EVENTOS ====================
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => changeTheme(btn.dataset.theme));
+        });
+
+        nextBtn.addEventListener('click', nextQuestion);
+        resetBtn.addEventListener('click', resetGame);
+        
+        soundToggle.addEventListener('click', () => {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            soundToggle.textContent = gameState.soundEnabled ? '🔊' : '🔇';
+        });
+        
+        document.getElementById('modalPlayAgain').addEventListener('click', () => {
+            gameModal.style.display = 'none';
+            resetGame();
+        });
+
+        // ==================== INICIALIZAÇÃO ====================
+        function init() {
+            loadThemeQuestions();
+            loadQuestion();
+            updateUI();
+            document.querySelector('[data-theme="cars"]').classList.add('active');
+            console.log('🎮 Tríplice Desafio iniciado!');
+        }
+
+        init();
+    </script>
+</body>
+</html>
