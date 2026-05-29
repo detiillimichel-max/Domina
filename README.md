@@ -1,52 +1,43 @@
-# Tr-plice-jogos-Chat
-# 🎯 Tríplice Desafio - Carros + Esportes + Imagens
+# Domino Royale - Jogo de Domino
 
-### *Jogo interativo com som e temas dinâmicos*
+## Sobre o Jogo
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+Um jogo de domino completo para 4 jogadores com visuais realistas de pecas de domino, sistema de pontuacao e premiacao.
 
-## 🎮 Sobre o Jogo
+## Funcionalidades
 
-Um jogo de perguntas e respostas com **3 temas diferentes**:
-- 🚗 **MUNDO DOS CARROS** - Marcas, modelos e automobilismo
-- ⚽ **ESPORTES RADICAIS** - Futebol, basquete e mais
-- 🎨 **IMAGENS MISTERIOSAS** - Adivinhe o que os emojis representam
+- 4 jogadores (1 humano + 3 oponentes IA)
+- Pecas de domino com visual realista e pontos
+- Mesa de jogo verde (estilo casino)
+- Sistema de pontuacao e vitorias/derrotas
+- Sons sintetizados para jogadas
+- Modal de vitoria com premiacoes
+- Modal de derrota
+- Regras do jogo integradas
+- Notificacoes de jogadas
 
-## ✨ Funcionalidades
+## Como Jogar
 
-- ✅ **3 temas exclusivos**
-- ✅ **Sistema de som** (acertos, erros e vitória)
-- ✅ **Modal personalizado** por tema
-- ✅ **10 rodadas por tema**
-- ✅ **Pontuação dinâmica**
-- ✅ **Design responsivo**
-- ✅ **Botão mute/unmute**
+1. Voce sempre comeca jogando
+2. Clique em uma peca da sua mao para seleciona-la
+3. Escolha jogar na esquerda ou direita da mesa
+4. Os numeros devem coincidir nas extremidades
+5. Se nao puder jogar, passe a vez
+6. O primeiro a ficar sem pecas vence
 
-## 🎯 Como Jogar
+## Pontuacao
 
-1. Escolha um tema (Carros, Esportes ou Imagens)
-2. Leia a pergunta ou veja a imagem/emoji
-3. Clique na resposta correta
-4. Ganhe 10 pontos por acerto
-5. Complete 10 rodadas e vença!
+- Vence quem ficar sem pecas primeiro
+- Ganha pontos = soma das pecas dos oponentes + 50 de bonus
+- Se o jogo bloquear, quem tiver menor soma de pontos vence
 
-## 🔊 Sons do Jogo
-
-- **Acerto** 🔔 - Tom alto e alegre
-- **Erro** ❌ - Tom baixo
-- **Vitória** 🏆 - Melodia especial
-- **Mute** 🔇 - Desative os sons a qualquer momento
-
-## 📱 Tecnologias
+## Tecnologias
 
 - HTML5
-- CSS3 (Animações, Flexbox, Grid)
+- CSS3 (Gradientes, Grid, Flexbox, Animacoes)
 - JavaScript (Vanilla)
 - Web Audio API (sons sintetizados)
 
-## 🚀 Instalação
+## Executar
 
-```bash
-git clone https://github.com/seu-usuario/triplice-desafio.git
-cd triplice-desafio
-# Abra o index.html no navegador
+Abra o arquivo index.html no navegador.

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎯 Tríplice Desafio - Carros + Esportes + Imagens 🎯</title>
+    <title>Domino Royale - Jogo de Dominó</title>
     <style>
         * {
             margin: 0;
@@ -12,294 +12,442 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 50%, #1a472a 100%);
             min-height: 100vh;
-            padding: 20px;
-            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Container principal */
         .game-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255,255,255,0.95);
-            border-radius: 40px;
-            padding: 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            padding: 20px;
         }
 
-        /* Header com temas */
-        .themes-bar {
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c1810, #4a2c1a);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .theme-btn {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border: none;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            color: #ffd700;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header-controls {
+            display: flex;
             gap: 10px;
         }
 
-        .theme-btn.cars {
-            background: linear-gradient(135deg, #ff6b6b, #c92a2a);
-            color: white;
-        }
-
-        .theme-btn.sports {
-            background: linear-gradient(135deg, #51cf66, #2b8a3e);
-            color: white;
-        }
-
-        .theme-btn.images {
-            background: linear-gradient(135deg, #74c0fc, #1864ab);
-            color: white;
-        }
-
-        .theme-btn.active {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border: 2px solid gold;
-        }
-
-        .theme-btn:hover {
-            transform: translateY(-3px);
-        }
-
-        /* Placar */
-        .score-area {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .score-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 15px;
-            border-radius: 20px;
-            text-align: center;
-            color: white;
-        }
-
-        .score-card .label {
-            font-size: 0.8em;
-            opacity: 0.9;
-        }
-
-        .score-card .value {
-            font-size: 2em;
-            font-weight: bold;
-        }
-
-        /* Área do desafio */
-        .challenge-area {
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            border-radius: 30px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 25px;
-            min-height: 350px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .challenge-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .challenge-question {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .challenge-image {
-            font-size: 3em;
-            letter-spacing: 10px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 20px;
-            display: inline-block;
-            font-family: monospace;
-        }
-
-        /* Imagem ascii para tema imagens */
-        .ascii-art {
-            font-size: 0.7em;
-            white-space: pre;
-            font-family: monospace;
-            background: #2c3e50;
-            color: #4ecdc4;
-            padding: 20px;
-            border-radius: 15px;
-            overflow-x: auto;
-        }
-
-        /* Opções */
-        .options-area {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .option-card {
-            background: white;
-            border: 3px solid #e0e0e0;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .option-card:hover:not(.disabled) {
-            transform: scale(1.05);
-            border-color: #ff6b6b;
-            background: #fff5f5;
-        }
-
-        .option-card.correct {
-            background: linear-gradient(135deg, #51cf66, #2b8a3e);
-            color: white;
-            animation: correctPulse 0.5s;
-        }
-
-        .option-card.wrong {
-            background: linear-gradient(135deg, #ff6b6b, #c92a2a);
-            color: white;
-            animation: wrongShake 0.5s;
-        }
-
-        .option-card.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        @keyframes correctPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 0 0 20px #51cf66; }
-        }
-
-        @keyframes wrongShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        /* Botões de ação */
-        .action-area {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            padding: 12px 30px;
+        .btn {
+            padding: 12px 24px;
             border: none;
-            border-radius: 50px;
+            border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .next-btn {
-            background: #4ecdc4;
-            color: white;
-        }
-
-        .reset-btn {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        .action-btn:hover {
+        .btn:hover {
             transform: translateY(-2px);
-            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
 
-        /* Modal personalizado */
-        .custom-modal {
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #2c1810;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        /* Scoreboard */
+        .scoreboard {
+            background: linear-gradient(135deg, #2c1810, #3d2517);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .score-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .score-card .label {
+            color: #ffd700;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .score-card .value {
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Game Table */
+        .game-table {
+            background: radial-gradient(ellipse at center, #2d5a3f 0%, #1a472a 100%);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 400px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.4);
+            border: 8px solid #2c1810;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .domino-area {
+            position: relative;
+            z-index: 1;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .domino-row {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex-wrap: nowrap;
+            max-width: 100%;
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        /* Domino Pieces */
+        .domino-piece {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #333;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .domino-piece.horizontal {
+            flex-direction: row;
+        }
+
+        .domino-piece:not(.played):hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+
+        .domino-piece.selected {
+            box-shadow: 0 0 20px #ffd700, 0 8px 25px rgba(0,0,0,0.6);
+            border-color: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .domino-piece.played {
+            cursor: default;
+        }
+
+        .domino-half {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            padding: 6px;
+            position: relative;
+        }
+
+        .domino-half::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #333;
+            display: none;
+        }
+
+        .domino-piece.horizontal .domino-half:first-child::after {
+            display: block;
+            width: 2px;
+            height: 80%;
+        }
+
+        .domino-piece:not(.horizontal) .domino-half:first-child::after {
+            display: block;
+            width: 80%;
+            height: 2px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+            opacity: 0;
+        }
+
+        .dot.visible {
+            opacity: 1;
+        }
+
+        /* Player Area */
+        .player-area {
+            background: linear-gradient(135deg, #2c1810, #4a2c1a);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .player-name {
+            color: #ffd700;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .player-tiles {
+            color: white;
+            opacity: 0.8;
+        }
+
+        .player-hand {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        /* AI Players */
+        .ai-area {
+            position: absolute;
+            background: rgba(44, 24, 16, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .ai-area.left {
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ai-area.right {
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ai-area.top {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .ai-name {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .ai-tiles {
+            color: white;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        /* Play Buttons */
+        .play-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .play-btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+        }
+
+        .play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Turn Indicator */
+        .turn-indicator {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 24, 16, 0.95);
+            padding: 10px 25px;
+            border-radius: 30px;
+            color: #ffd700;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        /* Modal */
+        .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
             justify-content: center;
             align-items: center;
             animation: fadeIn 0.3s;
         }
 
-        .modal-themed {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 40px;
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2c1810, #4a2c1a);
+            border-radius: 30px;
             padding: 40px;
             max-width: 500px;
             width: 90%;
             text-align: center;
             color: white;
-            border: 3px solid gold;
-            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 3px solid #ffd700;
         }
 
-        .modal-themed h2 {
+        .modal-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            color: #ffd700;
             font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .modal-body {
+            font-size: 1.2em;
+            line-height: 1.6;
             margin-bottom: 20px;
         }
 
-        .modal-themed .modal-icon {
-            font-size: 5em;
-            margin-bottom: 20px;
-        }
-
-        .modal-themed button {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: gold;
-            border: none;
-            border-radius: 50px;
+        .prize {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #2c1810;
+            padding: 15px 30px;
+            border-radius: 12px;
             font-weight: bold;
-            cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1.3em;
+            margin: 20px 0;
+            display: inline-block;
         }
 
-        /* Indicador de som */
-        .sound-toggle {
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .stat-label {
+            color: #ffd700;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        /* Notifications */
+        .notification {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.7);
+            background: linear-gradient(135deg, #28a745, #1e7e34);
             color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.5em;
-            z-index: 1000;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            z-index: 2000;
+            animation: slideIn 0.3s;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #dc3545, #c82333);
         }
 
         @keyframes fadeIn {
@@ -307,168 +455,306 @@
             to { opacity: 1; }
         }
 
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .challenge-question { font-size: 1.2em; }
-            .options-area { grid-template-columns: 1fr; }
-            .theme-btn { padding: 10px 20px; font-size: 1em; }
+            .header h1 { font-size: 1.8em; }
+            .domino-half { width: 32px; height: 32px; padding: 5px; }
+            .dot { width: 6px; height: 6px; }
+            .game-table { padding: 15px; min-height: 300px; }
+            .ai-area { position: static; transform: none; margin: 5px; display: inline-block; }
+            .domino-area { min-height: 200px; }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <!-- Botões de tema -->
-        <div class="themes-bar">
-            <button class="theme-btn cars" data-theme="cars">🚗 CARROS</button>
-            <button class="theme-btn sports" data-theme="sports">⚽ ESPORTES</button>
-            <button class="theme-btn images" data-theme="images">🎨 IMAGENS</button>
-        </div>
-
-        <!-- Placar -->
-        <div class="score-area">
-            <div class="score-card">
-                <div class="label">⭐ PONTOS</div>
-                <div class="value" id="score">0</div>
-            </div>
-            <div class="score-card">
-                <div class="label">✅ ACERTOS</div>
-                <div class="value" id="hits">0</div>
-            </div>
-            <div class="score-card">
-                <div class="label">📊 RODADA</div>
-                <div class="value"><span id="currentRound">1</span>/<span id="totalRounds">10</span></div>
+        <!-- Header -->
+        <div class="header">
+            <h1>Domino Royale</h1>
+            <div class="header-controls">
+                <button class="btn btn-primary" id="newGameBtn">Nova Partida</button>
+                <button class="btn btn-secondary" id="rulesBtn">Regras</button>
+                <button class="btn btn-secondary" id="soundBtn">Som: ON</button>
             </div>
         </div>
 
-        <!-- Área do desafio -->
-        <div class="challenge-area" id="challengeArea">
-            <div class="challenge-icon" id="challengeIcon">🚗</div>
-            <div class="challenge-question" id="challengeQuestion">Selecione um tema!</div>
-            <div id="challengeMedia"></div>
+        <!-- Scoreboard -->
+        <div class="scoreboard">
+            <div class="score-card">
+                <div class="label">Sua Pontuacao</div>
+                <div class="value" id="playerScore">0</div>
+            </div>
+            <div class="score-card">
+                <div class="label">Vitorias</div>
+                <div class="value" id="wins">0</div>
+            </div>
+            <div class="score-card">
+                <div class="label">Derrotas</div>
+                <div class="value" id="losses">0</div>
+            </div>
+            <div class="score-card">
+                <div class="label">Rodada</div>
+                <div class="value" id="round">1</div>
+            </div>
         </div>
 
-        <!-- Opções -->
-        <div class="options-area" id="optionsArea"></div>
+        <!-- Game Table -->
+        <div class="game-table">
+            <div class="table-pattern"></div>
 
-        <!-- Ações -->
-        <div class="action-area">
-            <button class="action-btn next-btn" id="nextBtn" style="display: none;">⏩ PRÓXIMA</button>
-            <button class="action-btn reset-btn" id="resetBtn">🔄 NOVO JOGO</button>
+            <!-- AI Players -->
+            <div class="ai-area left" id="ai1Area">
+                <div class="ai-name">Jogador 2</div>
+                <div class="ai-tiles" id="ai1Tiles">7 pecas</div>
+            </div>
+            <div class="ai-area top" id="ai2Area">
+                <div class="ai-name">Jogador 3</div>
+                <div class="ai-tiles" id="ai2Tiles">7 pecas</div>
+            </div>
+            <div class="ai-area right" id="ai3Area">
+                <div class="ai-name">Jogador 4</div>
+                <div class="ai-tiles" id="ai3Tiles">7 pecas</div>
+            </div>
+
+            <!-- Domino Area -->
+            <div class="domino-area" id="dominoArea">
+                <div class="domino-row" id="tableRow">
+                    <div style="color: #ffd700; font-size: 1.2em;">Mesa vazia - Aguardando primeira peca...</div>
+                </div>
+            </div>
+
+            <!-- Turn Indicator -->
+            <div class="turn-indicator" id="turnIndicator">Sua vez de jogar</div>
+        </div>
+
+        <!-- Player Area -->
+        <div class="player-area">
+            <div class="player-info">
+                <div class="player-name">Sua Mao <span id="playerTiles">(7 pecas)</span></div>
+                <div style="color: white;">Pontos da mao: <strong id="handPoints">0</strong></div>
+            </div>
+            <div class="player-hand" id="playerHand"></div>
+
+            <div class="play-options">
+                <button class="btn btn-success play-btn" id="playLeftBtn" disabled>Jogar Esquerda</button>
+                <button class="btn btn-success play-btn" id="playRightBtn" disabled>Jogar Direita</button>
+                <button class="btn btn-danger play-btn" id="passBtn" disabled>Passar Vez</button>
+            </div>
         </div>
     </div>
 
-    <!-- Botão de som -->
-    <div class="sound-toggle" id="soundToggle">🔊</div>
-
-    <!-- Modal personalizado -->
-    <div class="custom-modal" id="gameModal">
-        <div class="modal-themed" id="modalContent">
-            <div class="modal-icon" id="modalIcon">🏆</div>
-            <h2 id="modalTitle">FIM DE JOGO!</h2>
-            <p id="modalMessage">Sua pontuação: <strong id="modalScore">0</strong></p>
-            <p id="modalDetail"></p>
-            <button id="modalPlayAgain">🎮 JOGAR NOVAMENTE</button>
+    <!-- Win Modal -->
+    <div class="modal" id="winModal">
+        <div class="modal-content">
+            <div class="modal-icon">&#127942;</div>
+            <h2 class="modal-title">Parabens!</h2>
+            <div class="modal-body">
+                <p>Voce venceu esta rodada!</p>
+                <div class="prize" id="prizeDisplay">+50 pontos</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Pecas Restantes</div>
+                        <div class="stat-value" id="finalPiecesCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Bonus</div>
+                        <div class="stat-value" id="bonusDisplay">0</div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="playAgainBtn">Jogar Novamente</button>
         </div>
     </div>
+
+    <!-- Lose Modal -->
+    <div class="modal" id="loseModal">
+        <div class="modal-content">
+            <div class="modal-icon">&#128546;</div>
+            <h2 class="modal-title">Derrota</h2>
+            <div class="modal-body">
+                <p>O jogador <span id="winnerName">-</span> venceu!</p>
+                <p>Pontos perdidos: <span id="lostPoints">0</span></p>
+            </div>
+            <button class="btn btn-primary" id="tryAgainBtn">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal" id="rulesModal">
+        <div class="modal-content">
+            <div class="modal-icon">&#128218;</div>
+            <h2 class="modal-title">Regras do Domino</h2>
+            <div class="modal-body" style="text-align: left;">
+                <h3 style="color: #ffd700; margin: 15px 0 10px;">Objetivo:</h3>
+                <p>Ser o primeiro a ficar sem pecas na mao.</p>
+
+                <h3 style="color: #ffd700; margin: 15px 0 10px;">Como Jogar:</h3>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li>Cada jogador recebe 7 pecas</li>
+                    <li>Voce sempre comeca jogando</li>
+                    <li>Selecione uma peca e escolha jogar na esquerda ou direita</li>
+                    <li>Os numeros devem coincidir nas extremidades</li>
+                    <li>Se nao puder jogar, passe a vez</li>
+                    <li>O jogo termina quando um jogador fica sem pecas</li>
+                </ul>
+
+                <h3 style="color: #ffd700; margin: 15px 0 10px;">Pontuacao:</h3>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li>Vence quem ficar sem pecas primeiro</li>
+                    <li>Ganha pontos = soma das pecas dos oponentes</li>
+                    <li>Bonus de 50 pontos por vencer</li>
+                    <li>Se bloquear, quem tiver menor soma vence</li>
+                </ul>
+            </div>
+            <button class="btn btn-primary" id="closeRulesBtn">Entendi!</button>
+        </div>
+    </div>
+
+    <div id="notificationArea"></div>
 
     <script>
-        // ==================== BANCO DE DADOS DOS TEMAS ====================
-        const themesData = {
-            cars: {
-                name: "CARROS",
-                icon: "🚗",
-                color: "#ff6b6b",
-                questions: [
-                    { question: "Qual fabricante tem o símbolo do cavalo empinado?", answer: "Ferrari", options: ["Ferrari", "Porsche", "Lamborghini", "Mustang"] },
-                    { question: "Qual país fabrica a BMW?", answer: "Alemanha", options: ["Alemanha", "Japão", "EUA", "Itália"] },
-                    { question: "Qual é o carro mais rápido do mundo (produção)?", answer: "Bugatti", options: ["Bugatti", "Tesla", "Ferrari", "Koenigsegg"] },
-                    { question: "Qual desses é um modelo da Toyota?", answer: "Corolla", options: ["Corolla", "Civic", "Focus", "Golf"] },
-                    { question: "O que significa a sigla 'F1' no automobilismo?", answer: "Fórmula 1", options: ["Fórmula 1", "Fast One", "Ferrari 1", "Final 1"] }
-                ]
-            },
-            sports: {
-                name: "ESPORTES",
-                icon: "⚽",
-                color: "#51cf66",
-                questions: [
-                    { question: "Qual país ganhou mais Copas do Mundo de Futebol?", answer: "Brasil", options: ["Brasil", "Alemanha", "Itália", "Argentina"] },
-                    { question: "Quem é conhecido como 'Air Jordan'?", answer: "Michael Jordan", options: ["Michael Jordan", "LeBron James", "Kobe Bryant", "Magic Johnson"] },
-                    { question: "Qual esporte usa uma peteca?", answer: "Badminton", options: ["Badminton", "Tênis", "Vôlei", "Paddle"] },
-                    { question: "Quantos jogadores tem um time de basquete em quadra?", answer: "5", options: ["5", "6", "7", "4"] },
-                    { question: "Qual estádio é conhecido como 'Maracanã'?", answer: "Rio de Janeiro", options: ["Rio de Janeiro", "São Paulo", "Belo Horizonte", "Porto Alegre"] }
-                ]
-            },
-            images: {
-                name: "IMAGENS",
-                icon: "🎨",
-                color: "#74c0fc",
-                questions: [
-                    { question: "🐱 → Qual animal?", answer: "Gato", options: ["Gato", "Cachorro", "Rato", "Coelho"] },
-                    { question: "🌞 → O que é?", answer: "Sol", options: ["Sol", "Lua", "Estrela", "Planeta"] },
-                    { question: "🍕 → Qual comida?", answer: "Pizza", options: ["Pizza", "Hambúrguer", "Lasanha", "Taco"] },
-                    { question: "✈️ → Qual meio de transporte?", answer: "Avião", options: ["Avião", "Helicóptero", "Foguete", "Drone"] },
-                    { question: "🎵 → O que representa?", answer: "Música", options: ["Música", "Rádio", "Show", "Nota"] }
-                ]
-            }
-        };
-
-        // Estado do jogo
-        let gameState = {
-            currentTheme: "cars",
+        // ==================== GAME STATE ====================
+        const gameState = {
+            playerHand: [],
+            aiHands: [[], [], []],
+            table: [],
+            currentTurn: 'player',
+            selectedPiece: null,
+            leftEnd: null,
+            rightEnd: null,
             score: 0,
-            hits: 0,
-            currentRound: 1,
-            totalRounds: 10,
-            currentQuestionIndex: 0,
-            questions: [],
-            canAnswer: true,
-            soundEnabled: true
+            wins: 0,
+            losses: 0,
+            round: 1,
+            soundEnabled: true,
+            gameOver: false,
+            canPass: false,
+            passedCount: 0
         };
 
-        let currentQuestion = null;
-        let audioContext = null;
+        // ==================== DOMINO PIECES ====================
+        function createDominoSet() {
+            const pieces = [];
+            for (let i = 0; i <= 6; i++) {
+                for (let j = i; j <= 6; j++) {
+                    pieces.push({ top: i, bottom: j, id: `${i}-${j}` });
+                }
+            }
+            return pieces;
+        }
 
-        // Elementos DOM
-        const scoreEl = document.getElementById('score');
-        const hitsEl = document.getElementById('hits');
-        const currentRoundEl = document.getElementById('currentRound');
-        const totalRoundsEl = document.getElementById('totalRounds');
-        const challengeIcon = document.getElementById('challengeIcon');
-        const challengeQuestion = document.getElementById('challengeQuestion');
-        const challengeMedia = document.getElementById('challengeMedia');
-        const optionsArea = document.getElementById('optionsArea');
-        const nextBtn = document.getElementById('nextBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const soundToggle = document.getElementById('soundToggle');
-        const gameModal = document.getElementById('gameModal');
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-        // ==================== SISTEMA DE SOM ====================
+        function calculatePoints(hand) {
+            return hand.reduce((sum, piece) => sum + piece.top + piece.bottom, 0);
+        }
+
+        function getPieceValue(piece) {
+            return piece.top + piece.bottom;
+        }
+
+        // ==================== DOT PATTERNS ====================
+        const dotPatterns = {
+            0: [],
+            1: [4],
+            2: [0, 8],
+            3: [0, 4, 8],
+            4: [0, 2, 6, 8],
+            5: [0, 2, 4, 6, 8],
+            6: [0, 2, 3, 5, 6, 8]
+        };
+
+        function createDominoHTML(piece, horizontal = false, isPlayed = false) {
+            const pieceDiv = document.createElement('div');
+            pieceDiv.className = `domino-piece ${horizontal ? 'horizontal' : ''} ${isPlayed ? 'played' : ''}`;
+            pieceDiv.dataset.id = piece.id;
+            pieceDiv.dataset.top = piece.top;
+            pieceDiv.dataset.bottom = piece.bottom;
+
+            const topHalf = document.createElement('div');
+            topHalf.className = 'domino-half';
+            for (let i = 0; i < 9; i++) {
+                const dot = document.createElement('div');
+                dot.className = `dot ${dotPatterns[piece.top].includes(i) ? 'visible' : ''}`;
+                topHalf.appendChild(dot);
+            }
+
+            const bottomHalf = document.createElement('div');
+            bottomHalf.className = 'domino-half';
+            for (let i = 0; i < 9; i++) {
+                const dot = document.createElement('div');
+                dot.className = `dot ${dotPatterns[piece.bottom].includes(i) ? 'visible' : ''}`;
+                bottomHalf.appendChild(dot);
+            }
+
+            pieceDiv.appendChild(topHalf);
+            pieceDiv.appendChild(bottomHalf);
+
+            return pieceDiv;
+        }
+
+        // ==================== DOM ELEMENTS ====================
+        const elements = {
+            playerHand: document.getElementById('playerHand'),
+            playerScore: document.getElementById('playerScore'),
+            wins: document.getElementById('wins'),
+            losses: document.getElementById('losses'),
+            round: document.getElementById('round'),
+            tableRow: document.getElementById('tableRow'),
+            playerTiles: document.getElementById('playerTiles'),
+            handPoints: document.getElementById('handPoints'),
+            playLeftBtn: document.getElementById('playLeftBtn'),
+            playRightBtn: document.getElementById('playRightBtn'),
+            passBtn: document.getElementById('passBtn'),
+            newGameBtn: document.getElementById('newGameBtn'),
+            rulesBtn: document.getElementById('rulesBtn'),
+            soundBtn: document.getElementById('soundBtn'),
+            winModal: document.getElementById('winModal'),
+            loseModal: document.getElementById('loseModal'),
+            rulesModal: document.getElementById('rulesModal'),
+            ai1Tiles: document.getElementById('ai1Tiles'),
+            ai2Tiles: document.getElementById('ai2Tiles'),
+            ai3Tiles: document.getElementById('ai3Tiles'),
+            turnIndicator: document.getElementById('turnIndicator')
+        };
+
+        // ==================== SOUND SYSTEM ====================
         function playSound(type) {
             if (!gameState.soundEnabled) return;
-            
+
             try {
-                // Criar sons sintetizados (sem arquivos externos)
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
-                
+
                 oscillator.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
-                
-                if (type === 'correct') {
-                    oscillator.frequency.value = 880;
-                    gainNode.gain.value = 0.3;
+
+                if (type === 'place') {
+                    oscillator.frequency.value = 400;
+                    gainNode.gain.value = 0.2;
                     oscillator.start();
-                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-                    oscillator.stop(audioCtx.currentTime + 0.5);
-                } else if (type === 'wrong') {
-                    oscillator.frequency.value = 440;
-                    gainNode.gain.value = 0.3;
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
+                    oscillator.stop(audioCtx.currentTime + 0.1);
+                } else if (type === 'pass') {
+                    oscillator.frequency.value = 200;
+                    gainNode.gain.value = 0.15;
                     oscillator.start();
-                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.8);
-                    oscillator.stop(audioCtx.currentTime + 0.8);
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+                    oscillator.stop(audioCtx.currentTime + 0.2);
                 } else if (type === 'win') {
-                    // Som de vitória (melodia simples)
-                    const notes = [523.25, 587.33, 659.25, 523.25];
+                    const notes = [523.25, 587.33, 659.25, 783.99];
                     notes.forEach((freq, i) => {
                         setTimeout(() => {
                             const osc = audioCtx.createOscillator();
@@ -476,208 +762,441 @@
                             osc.connect(gain);
                             gain.connect(audioCtx.destination);
                             osc.frequency.value = freq;
-                            gain.gain.value = 0.2;
+                            gain.gain.value = 0.15;
                             osc.start();
                             gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
                             osc.stop(audioCtx.currentTime + 0.3);
                         }, i * 150);
                     });
+                } else if (type === 'error') {
+                    oscillator.frequency.value = 150;
+                    gainNode.gain.value = 0.2;
+                    oscillator.start();
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+                    oscillator.stop(audioCtx.currentTime + 0.3);
                 }
             } catch(e) {
-                console.log('Som não suportado');
+                console.log('Audio not supported');
             }
         }
 
-        // ==================== FUNÇÕES DO JOGO ====================
-        function shuffleArray(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
+        // ==================== GAME LOGIC ====================
+        function startNewGame() {
+            const pieces = shuffleArray(createDominoSet());
+
+            gameState.playerHand = pieces.slice(0, 7);
+            gameState.aiHands = [
+                pieces.slice(7, 14),
+                pieces.slice(14, 21),
+                pieces.slice(21, 28)
+            ];
+            gameState.table = [];
+            gameState.currentTurn = 'player';
+            gameState.selectedPiece = null;
+            gameState.leftEnd = null;
+            gameState.rightEnd = null;
+            gameState.gameOver = false;
+            gameState.canPass = false;
+            gameState.passedCount = 0;
+
+            updateUI();
+            updateTurnIndicator();
+            showNotification('Nova partida iniciada! Voce comeca.', 'success');
         }
 
-        function loadThemeQuestions() {
-            const theme = themesData[gameState.currentTheme];
-            let questions = [...theme.questions];
-            
-            // Duplicar para ter 10 questões
-            while (questions.length < gameState.totalRounds) {
-                questions = [...questions, ...theme.questions];
-            }
-            questions = questions.slice(0, gameState.totalRounds);
-            
-            gameState.questions = shuffleArray(questions);
-            gameState.currentQuestionIndex = 0;
+        function selectPiece(pieceId) {
+            if (gameState.currentTurn !== 'player' || gameState.gameOver) return;
+
+            const piece = gameState.playerHand.find(p => p.id === pieceId);
+            if (!piece) return;
+
+            // Remove previous selection
+            document.querySelectorAll('.domino-piece.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Select new piece
+            gameState.selectedPiece = piece;
+            const pieceEl = document.querySelector(`.player-hand [data-id="${pieceId}"]`);
+            if (pieceEl) pieceEl.classList.add('selected');
+
+            updatePlayButtons();
         }
 
-        function loadQuestion() {
-            if (gameState.currentQuestionIndex >= gameState.questions.length) {
-                gameWin();
+        function updatePlayButtons() {
+            const piece = gameState.selectedPiece;
+
+            if (!piece || gameState.currentTurn !== 'player') {
+                elements.playLeftBtn.disabled = true;
+                elements.playRightBtn.disabled = true;
+                elements.passBtn.disabled = true;
                 return;
             }
-            
-            currentQuestion = { ...gameState.questions[gameState.currentQuestionIndex] };
-            // Embaralhar opções
-            currentQuestion.options = shuffleArray([...currentQuestion.options]);
-            
-            // Atualizar UI
-            const theme = themesData[gameState.currentTheme];
-            challengeIcon.textContent = theme.icon;
-            challengeQuestion.textContent = currentQuestion.question;
-            
-            // Para tema imagens, mostrar emoji maior
-            if (gameState.currentTheme === 'images') {
-                challengeMedia.innerHTML = `<div class="challenge-image" style="font-size: 4em;">${currentQuestion.question}</div>`;
-                challengeQuestion.textContent = "O que é isto?";
-            } else {
-                challengeMedia.innerHTML = '';
-                challengeQuestion.textContent = currentQuestion.question;
+
+            // Check if can play
+            const canPlayLeft = canPlayAt(piece, 'left');
+            const canPlayRight = canPlayAt(piece, 'right');
+
+            elements.playLeftBtn.disabled = !canPlayLeft;
+            elements.playRightBtn.disabled = !canPlayRight;
+
+            // Check if can pass
+            const hasValidMove = gameState.playerHand.some(p =>
+                canPlayAt(p, 'left') || canPlayAt(p, 'right')
+            );
+
+            gameState.canPass = !hasValidMove;
+            elements.passBtn.disabled = hasValidMove;
+        }
+
+        function canPlayAt(piece, side) {
+            if (gameState.table.length === 0) return true;
+
+            const end = side === 'left' ? gameState.leftEnd : gameState.rightEnd;
+            return piece.top === end || piece.bottom === end;
+        }
+
+        function playPiece(side) {
+            if (!gameState.selectedPiece || gameState.currentTurn !== 'player') return;
+
+            const piece = gameState.selectedPiece;
+
+            if (!canPlayAt(piece, side)) {
+                showNotification('Esta peca nao pode ser jogada aqui!', 'error');
+                playSound('error');
+                return;
             }
-            
-            renderOptions();
-            gameState.canAnswer = true;
-            nextBtn.style.display = 'none';
-        }
 
-        function renderOptions() {
-            optionsArea.innerHTML = '';
-            currentQuestion.options.forEach(opt => {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'option-card';
-                optionDiv.textContent = opt;
-                optionDiv.onclick = () => checkAnswer(opt);
-                optionsArea.appendChild(optionDiv);
-            });
-        }
+            // Remove from hand
+            gameState.playerHand = gameState.playerHand.filter(p => p.id !== piece.id);
 
-        function checkAnswer(selected) {
-            if (!gameState.canAnswer) return;
-            
-            const isCorrect = selected === currentQuestion.answer;
-            
-            if (isCorrect) {
-                playSound('correct');
-                gameState.score += 10;
-                gameState.hits++;
-                gameState.currentRound++;
-                updateUI();
-                
-                // Feedback visual
-                const options = document.querySelectorAll('.option-card');
-                options.forEach(opt => {
-                    if (opt.textContent === selected) {
-                        opt.classList.add('correct');
+            // Play on table
+            if (gameState.table.length === 0) {
+                gameState.table.push({ ...piece, orientation: 'normal' });
+                gameState.leftEnd = piece.top;
+                gameState.rightEnd = piece.bottom;
+            } else {
+                let orientedPiece = { ...piece };
+
+                if (side === 'left') {
+                    if (piece.bottom === gameState.leftEnd) {
+                        orientedPiece.orientation = 'normal';
+                        gameState.leftEnd = piece.top;
+                    } else {
+                        orientedPiece.top = piece.bottom;
+                        orientedPiece.bottom = piece.top;
+                        orientedPiece.orientation = 'flipped';
+                        gameState.leftEnd = piece.bottom;
                     }
-                    opt.classList.add('disabled');
-                });
-                
-                gameState.canAnswer = false;
-                
-                if (gameState.currentRound > gameState.totalRounds) {
-                    gameWin();
+                    gameState.table.unshift(orientedPiece);
                 } else {
-                    nextBtn.style.display = 'block';
+                    if (piece.top === gameState.rightEnd) {
+                        orientedPiece.orientation = 'normal';
+                        gameState.rightEnd = piece.bottom;
+                    } else {
+                        orientedPiece.top = piece.bottom;
+                        orientedPiece.bottom = piece.top;
+                        orientedPiece.orientation = 'flipped';
+                        gameState.rightEnd = piece.top;
+                    }
+                    gameState.table.push(orientedPiece);
                 }
+            }
+
+            gameState.selectedPiece = null;
+            playSound('place');
+
+            updateUI();
+
+            // Check win
+            if (gameState.playerHand.length === 0) {
+                playerWins();
+                return;
+            }
+
+            // Next turn
+            gameState.currentTurn = 'ai1';
+            gameState.passedCount = 0;
+            updateTurnIndicator();
+            setTimeout(aiTurn, 800);
+        }
+
+        function passTurn() {
+            if (!gameState.canPass || gameState.currentTurn !== 'player') return;
+
+            playSound('pass');
+            gameState.passedCount++;
+
+            if (gameState.passedCount >= 4) {
+                checkBlockedGame();
+                return;
+            }
+
+            gameState.currentTurn = 'ai1';
+            updateUI();
+            updateTurnIndicator();
+            setTimeout(aiTurn, 800);
+        }
+
+        // ==================== AI LOGIC ====================
+        function aiTurn() {
+            if (gameState.gameOver) return;
+
+            const aiIndex = gameState.currentTurn === 'ai1' ? 0 :
+                           gameState.currentTurn === 'ai2' ? 1 : 2;
+
+            const aiHand = gameState.aiHands[aiIndex];
+
+            // Find playable pieces
+            const playablePieces = aiHand.filter(piece =>
+                canPlayAt(piece, 'left') || canPlayAt(piece, 'right')
+            );
+
+            if (playablePieces.length === 0) {
+                // Pass
+                gameState.passedCount++;
+
+                if (gameState.passedCount >= 4) {
+                    checkBlockedGame();
+                    return;
+                }
+
+                nextAITurn();
+                updateTurnIndicator();
+                setTimeout(aiTurn, 800);
+                return;
+            }
+
+            // Play best piece (highest value that can be played)
+            playablePieces.sort((a, b) => getPieceValue(b) - getPieceValue(a));
+            const pieceToPlay = playablePieces[0];
+
+            // Determine side
+            let side = 'right';
+            if (canPlayAt(pieceToPlay, 'left')) {
+                side = 'left';
+            }
+
+            // Remove from hand
+            gameState.aiHands[aiIndex] = aiHand.filter(p => p.id !== pieceToPlay.id);
+
+            // Play on table
+            if (gameState.table.length === 0) {
+                gameState.table.push({ ...pieceToPlay, orientation: 'normal' });
+                gameState.leftEnd = pieceToPlay.top;
+                gameState.rightEnd = pieceToPlay.bottom;
             } else {
-                playSound('wrong');
-                // Destacar resposta correta
-                const options = document.querySelectorAll('.option-card');
-                options.forEach(opt => {
-                    if (opt.textContent === selected) {
-                        opt.classList.add('wrong');
+                let orientedPiece = { ...pieceToPlay };
+
+                if (side === 'left') {
+                    if (pieceToPlay.bottom === gameState.leftEnd) {
+                        orientedPiece.orientation = 'normal';
+                        gameState.leftEnd = pieceToPlay.top;
+                    } else {
+                        orientedPiece.top = pieceToPlay.bottom;
+                        orientedPiece.bottom = pieceToPlay.top;
+                        orientedPiece.orientation = 'flipped';
+                        gameState.leftEnd = pieceToPlay.bottom;
                     }
-                    if (opt.textContent === currentQuestion.answer) {
-                        opt.classList.add('correct');
+                    gameState.table.unshift(orientedPiece);
+                } else {
+                    if (pieceToPlay.top === gameState.rightEnd) {
+                        orientedPiece.orientation = 'normal';
+                        gameState.rightEnd = pieceToPlay.bottom;
+                    } else {
+                        orientedPiece.top = pieceToPlay.bottom;
+                        orientedPiece.bottom = pieceToPlay.top;
+                        orientedPiece.orientation = 'flipped';
+                        gameState.rightEnd = pieceToPlay.top;
                     }
-                    opt.classList.add('disabled');
-                });
-                
-                gameState.canAnswer = false;
-                nextBtn.style.display = 'block';
+                    gameState.table.push(orientedPiece);
+                }
+            }
+
+            gameState.passedCount = 0;
+            playSound('place');
+            updateUI();
+
+            // Check win
+            if (gameState.aiHands[aiIndex].length === 0) {
+                aiWins(aiIndex);
+                return;
+            }
+
+            nextAITurn();
+            updateTurnIndicator();
+
+            if (gameState.currentTurn === 'player') {
+                gameState.canPass = !gameState.playerHand.some(p =>
+                    canPlayAt(p, 'left') || canPlayAt(p, 'right')
+                );
+                updateUI();
+            } else {
+                setTimeout(aiTurn, 800);
             }
         }
 
-        function nextQuestion() {
-            gameState.currentQuestionIndex++;
-            loadQuestion();
-            updateUI();
+        function nextAITurn() {
+            if (gameState.currentTurn === 'ai1') gameState.currentTurn = 'ai2';
+            else if (gameState.currentTurn === 'ai2') gameState.currentTurn = 'ai3';
+            else gameState.currentTurn = 'player';
         }
 
-        function updateUI() {
-            scoreEl.textContent = gameState.score;
-            hitsEl.textContent = gameState.hits;
-            currentRoundEl.textContent = gameState.currentRound;
-            totalRoundsEl.textContent = gameState.totalRounds;
-        }
+        // ==================== WIN/LOSE CONDITIONS ====================
+        function playerWins() {
+            gameState.gameOver = true;
+            gameState.wins++;
 
-        function resetGame() {
-            gameState = {
-                currentTheme: gameState.currentTheme,
-                score: 0,
-                hits: 0,
-                currentRound: 1,
-                totalRounds: 10,
-                currentQuestionIndex: 0,
-                questions: [],
-                canAnswer: true,
-                soundEnabled: gameState.soundEnabled
-            };
-            loadThemeQuestions();
-            loadQuestion();
-            updateUI();
-        }
+            const aiPoints = gameState.aiHands.reduce((sum, hand) =>
+                sum + calculatePoints(hand), 0
+            );
 
-        function changeTheme(theme) {
-            gameState.currentTheme = theme;
-            resetGame();
-            
-            // Atualizar botões ativos
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.dataset.theme === theme) btn.classList.add('active');
-            });
-        }
+            const bonus = 50;
+            const totalPoints = aiPoints + bonus;
 
-        function gameWin() {
+            gameState.score += totalPoints;
+
+            document.getElementById('finalPiecesCount').textContent = gameState.playerHand.length;
+            document.getElementById('bonusDisplay').textContent = `+${bonus}`;
+            document.getElementById('prizeDisplay').textContent = `+${totalPoints} pontos`;
+
+            elements.winModal.classList.add('active');
             playSound('win');
-            const theme = themesData[gameState.currentTheme];
-            document.getElementById('modalIcon').textContent = theme.icon;
-            document.getElementById('modalTitle').textContent = '🎉 VITÓRIA! 🎉';
-            document.getElementById('modalMessage').innerHTML = `Você completou o desafio <strong>${theme.name}</strong>!`;
-            document.getElementById('modalScore').textContent = gameState.score;
-            document.getElementById('modalDetail').innerHTML = `✅ ${gameState.hits} acertos em 10 rodadas!<br>⭐ Pontuação final: ${gameState.score}`;
-            gameModal.style.display = 'flex';
+            updateScoreboard();
         }
 
-        // ==================== EVENTOS ====================
-        document.querySelectorAll('.theme-btn').forEach(btn => {
-            btn.addEventListener('click', () => changeTheme(btn.dataset.theme));
-        });
+        function aiWins(aiIndex) {
+            gameState.gameOver = true;
+            gameState.losses++;
 
-        nextBtn.addEventListener('click', nextQuestion);
-        resetBtn.addEventListener('click', resetGame);
-        
-        soundToggle.addEventListener('click', () => {
+            const playerName = ['Jogador 2', 'Jogador 3', 'Jogador 4'][aiIndex];
+            const playerPoints = calculatePoints(gameState.playerHand);
+            const lostPoints = Math.min(playerPoints, 50);
+
+            gameState.score = Math.max(0, gameState.score - lostPoints);
+
+            document.getElementById('winnerName').textContent = playerName;
+            document.getElementById('lostPoints').textContent = lostPoints;
+
+            elements.loseModal.classList.add('active');
+            updateScoreboard();
+        }
+
+        function checkBlockedGame() {
+            gameState.gameOver = true;
+
+            const playerPoints = calculatePoints(gameState.playerHand);
+            const aiPoints = gameState.aiHands.map(h => calculatePoints(h));
+
+            const allPoints = [playerPoints, ...aiPoints];
+            const minPoints = Math.min(...allPoints);
+            const winnerIndex = allPoints.indexOf(minPoints);
+
+            if (winnerIndex === 0) {
+                playerWins();
+            } else {
+                aiWins(winnerIndex - 1);
+            }
+        }
+
+        // ==================== UI UPDATES ====================
+        function updateUI() {
+            // Update player hand
+            elements.playerHand.innerHTML = '';
+            gameState.playerHand.forEach(piece => {
+                const pieceEl = createDominoHTML(piece);
+                pieceEl.onclick = () => selectPiece(piece.id);
+                elements.playerHand.appendChild(pieceEl);
+            });
+
+            // Update table
+            if (gameState.table.length > 0) {
+                elements.tableRow.innerHTML = '';
+                gameState.table.forEach(piece => {
+                    const pieceEl = createDominoHTML(piece, true, true);
+                    elements.tableRow.appendChild(pieceEl);
+                });
+            } else {
+                elements.tableRow.innerHTML = '<div style="color: #ffd700; font-size: 1.2em;">Mesa vazia - Selecione uma peca para jogar</div>';
+            }
+
+            // Update hand info
+            elements.playerTiles.textContent = `(${gameState.playerHand.length} pecas)`;
+            elements.handPoints.textContent = calculatePoints(gameState.playerHand);
+
+            // Update AI info
+            elements.ai1Tiles.textContent = `${gameState.aiHands[0].length} pecas`;
+            elements.ai2Tiles.textContent = `${gameState.aiHands[1].length} pecas`;
+            elements.ai3Tiles.textContent = `${gameState.aiHands[2].length} pecas`;
+
+            // Update play buttons
+            updatePlayButtons();
+        }
+
+        function updateScoreboard() {
+            elements.playerScore.textContent = gameState.score;
+            elements.wins.textContent = gameState.wins;
+            elements.losses.textContent = gameState.losses;
+            elements.round.textContent = gameState.round;
+        }
+
+        function updateTurnIndicator() {
+            const turnNames = {
+                'player': 'Sua vez de jogar',
+                'ai1': 'Jogador 2 pensando...',
+                'ai2': 'Jogador 3 pensando...',
+                'ai3': 'Jogador 4 pensando...'
+            };
+            elements.turnIndicator.textContent = turnNames[gameState.currentTurn];
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.getElementById('notificationArea').appendChild(notification);
+
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        elements.playLeftBtn.onclick = () => playPiece('left');
+        elements.playRightBtn.onclick = () => playPiece('right');
+        elements.passBtn.onclick = passTurn;
+
+        elements.newGameBtn.onclick = () => {
+            gameState.round++;
+            startNewGame();
+        };
+
+        elements.soundBtn.onclick = () => {
             gameState.soundEnabled = !gameState.soundEnabled;
-            soundToggle.textContent = gameState.soundEnabled ? '🔊' : '🔇';
-        });
-        
-        document.getElementById('modalPlayAgain').addEventListener('click', () => {
-            gameModal.style.display = 'none';
-            resetGame();
-        });
+            elements.soundBtn.textContent = `Som: ${gameState.soundEnabled ? 'ON' : 'OFF'}`;
+        };
 
-        // ==================== INICIALIZAÇÃO ====================
-        function init() {
-            loadThemeQuestions();
-            loadQuestion();
-            updateUI();
-            document.querySelector('[data-theme="cars"]').classList.add('active');
-            console.log('🎮 Tríplice Desafio iniciado!');
-        }
+        document.getElementById('playAgainBtn').onclick = () => {
+            elements.winModal.classList.remove('active');
+            gameState.round++;
+            startNewGame();
+        };
 
-        init();
+        document.getElementById('tryAgainBtn').onclick = () => {
+            elements.loseModal.classList.remove('active');
+            gameState.round++;
+            startNewGame();
+        };
+
+        elements.rulesBtn.onclick = () => {
+            elements.rulesModal.classList.add('active');
+        };
+
+        document.getElementById('closeRulesBtn').onclick = () => {
+            elements.rulesModal.classList.remove('active');
+        };
+
+        // ==================== INITIALIZATION ====================
+        startNewGame();
+        updateScoreboard();
     </script>
 </body>
 </html>
